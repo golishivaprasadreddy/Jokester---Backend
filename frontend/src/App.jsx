@@ -1,21 +1,25 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import axios from "axios";
 import "./App.css";
 
 function App() {
-  const [jokes, setJokes] = useState([]); // Initialize with an empty array
+  const [joke, setJoke] = useState(null); // Store only one joke
 
-  // Fetch jokes from the API
-  useEffect(() => {
+  // Fetch a random joke from the API
+  const fetchRandomJoke = () => {
     axios
-      .get("api/jokes")
+      .get("http://localhost:3000/jokes")
       .then((response) => {
-        setJokes(response.data);
+        const jokesArray = response.data;
+        if (jokesArray.length > 0) {
+          const randomJoke = jokesArray[Math.floor(Math.random() * jokesArray.length)];
+          setJoke(randomJoke);
+        }
       })
       .catch((error) => {
         console.error("Error fetching data: ", error);
       });
-  }, []); // Fetch data only once when the component mounts
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-500 to-purple-600 flex flex-col items-center justify-center text-white">
@@ -23,19 +27,21 @@ function App() {
       <header className="text-center mb-8">
         <h1 className="text-4xl font-bold">Jokester</h1>
         <p className="text-lg mt-2">Your daily dose of laughs!</p>
+        <button
+          onClick={fetchRandomJoke}
+          className="mt-4 bg-white text-gray-800 px-4 py-2 rounded-lg shadow-md hover:bg-gray-200"
+        >
+          CLICK ME
+        </button>
       </header>
 
-      {/* Jokes List */}
-      <div className="mt-6 p-6 bg-white text-gray-800 rounded-lg shadow-md w-4/5 max-w-xl">
-        <ul>
-          {jokes.map((joke) => (
-            <li key={joke.id} className="border-b pb-4">
-              <h3 className="text-lg font-bold">{joke.title}</h3>
-              <p className="mt-2 text-base">{joke.content}</p>
-            </li>
-          ))}
-        </ul>
-      </div>
+      {/* Show a single joke */}
+      {joke && (
+        <div className="mt-6 p-6 bg-white text-gray-800 rounded-lg shadow-md w-4/5 max-w-xl">
+          <h3 className="text-lg font-bold">{joke.title}</h3>
+          <p className="mt-2 text-base">{joke.content}</p>
+        </div>
+      )}
 
       {/* Footer */}
       <footer className="mt-8 text-sm">
