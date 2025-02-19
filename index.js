@@ -7,7 +7,7 @@ const app = express();
 app.use(cors());
  
 
-app.get('/jokes', (req, res) => {
+app.get('/', (req, res) => {
     const jokes =[
       { id: 1, title: "Skeleton Fight", content: "Why don’t skeletons fight each other? They don’t have the guts." },
       { id: 2, title: "Scarecrow Award", content: "Why did the scarecrow win an award? Because he was outstanding in his field." },
